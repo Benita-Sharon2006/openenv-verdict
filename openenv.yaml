@@ -1,0 +1,20 @@
+name: verdict_env
+version: 0.1.0
+description: >
+  VERDICT ULTRA MAX — AI Legal War Room.
+  An AI agent acts as a lead attorney managing 15+ active legal cases
+  simultaneously across 20 interconnected systems including evidence,
+  witnesses, courtroom drama, opposing counsel, forensics, international
+  cases, cybercrime, settlements, media war, and senior partner pressure.
+  20 tools, 15-dimensional reward, cascading legal crises with real deadlines.
+author: Benita Sharon
+license: MIT
+tags:
+  - legal
+  - multi-case
+  - cascading-deadlines
+  - courtroom
+  - multi-system
+  - reasoning
+  - planning
+  - high-stakes
