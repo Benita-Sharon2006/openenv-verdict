@@ -1,12 +1,9 @@
 """VERDICT server entry point."""
-import os
 from openenv.core.env_server import create_app
 from server.verdict_environment import VerdictEnvironment
 from models import VerdictAction, VerdictObservation
 
-env = VerdictEnvironment()
-
-app = create_app(env, VerdictAction, VerdictObservation)
+app = create_app(VerdictEnvironment, VerdictAction, VerdictObservation)
 
 if __name__ == "__main__":
     import uvicorn
