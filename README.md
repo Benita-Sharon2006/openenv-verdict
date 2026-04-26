@@ -2,7 +2,7 @@
 title: VERDICT — Legal War Room RL Environment
 emoji: ⚖️
 colorFrom: blue
-colorTo: gold
+colorTo: yellow
 sdk: docker
 pinned: true
 license: mit
