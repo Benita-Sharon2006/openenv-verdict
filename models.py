@@ -33,6 +33,7 @@ class VerdictObservation(BaseModel):
     max_steps: int = 60
     difficulty: str = "medium"
     episode_id: str = ""
+    reward: float = 0.0
     current_reward: float = 0.0
     cumulative_reward: float = 0.0
     last_action_result: str = ""
