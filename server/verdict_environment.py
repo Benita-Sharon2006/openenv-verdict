@@ -5,6 +5,7 @@ AI agent acts as lead attorney managing multiple simultaneous cases.
 from __future__ import annotations
 import uuid
 from typing import Any, Dict
+from models import VerdictObservation
 
 from openenv.core import Environment
 from openenv.core.client_types import StepResult
@@ -66,27 +67,40 @@ class VerdictEnvironment(Environment):
         self._support = {}
         self._advanced = {}
 
-    def reset(self, **kwargs) -> Dict[str, Any]:
-        difficulty = kwargs.get("difficulty", "medium")
-        self._difficulty = difficulty if difficulty in DIFFICULTY_CONFIG else "medium"
-        self._episode_id = str(uuid.uuid4())[:8]
-        self._step = 0
-        self._done = False
-        self._cumulative_reward = 0.0
+    def reset(self, **kwargs) -> VerdictObservation:
+        from models import VerdictObservation
+        try:
+            difficulty = kwargs.get("difficulty", "medium")
+            self._difficulty = difficulty if difficulty in DIFFICULTY_CONFIG else "medium"
+            self._episode_id = str(uuid.uuid4())[:8]
+            self._step = 0
+            self._done = False
+            self._cumulative_reward = 0.0
 
-        self._cases = generate_cases(self._difficulty)
-        self._evidence = generate_evidence(self._difficulty)
-        self._witnesses = generate_witnesses(self._difficulty)
-        self._courtroom = generate_courtroom_state(self._difficulty)
-        self._support = generate_support_state(self._difficulty)
-        self._advanced = generate_advanced_state(self._difficulty)
+            self._cases = generate_cases(self._difficulty)
+            self._evidence = generate_evidence(self._difficulty)
+            self._witnesses = generate_witnesses(self._difficulty)
+            self._courtroom = generate_courtroom_state(self._difficulty)
+            self._support = generate_support_state(self._difficulty)
+            self._advanced = generate_advanced_state(self._difficulty)
 
-        self._last_result = (
-            f"VERDICT episode {self._episode_id} [{self._difficulty.upper()}] started. "
-            f"{len(self._cases)} active cases, {len(self._evidence)} evidence items, "
-            f"{len(self._witnesses)} witnesses. Use inspect_all to see full status."
-        )
-        return self._build_observation()
+            self._last_result = (
+                f"VERDICT episode {self._episode_id} [{self._difficulty.upper()}] started. "
+                f"{len(self._cases)} active cases, {len(self._evidence)} evidence items, "
+                f"{len(self._witnesses)} witnesses. Use inspect_all to see full status."
+            )
+            return self._build_observation()
+        except Exception as e:
+            import traceback
+            print(f"RESET ERROR: {e}")
+            traceback.print_exc()
+            return VerdictObservation(
+                step=0, max_steps=30, difficulty="easy",
+                episode_id="error", current_reward=0.0,
+                cumulative_reward=0.0,
+                last_action_result=f"Error: {str(e)}",
+                done=False
+            )
 
     def step(self, action: Dict[str, Any]) -> StepResult:
         if self._done:
