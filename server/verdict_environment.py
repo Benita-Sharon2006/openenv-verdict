@@ -66,7 +66,7 @@ class VerdictEnvironment(Environment):
         self._support = {}
         self._advanced = {}
 
-    async def reset(self, **kwargs) -> Dict[str, Any]:
+    def reset(self, **kwargs) -> Dict[str, Any]:
         difficulty = kwargs.get("difficulty", "medium")
         self._difficulty = difficulty if difficulty in DIFFICULTY_CONFIG else "medium"
         self._episode_id = str(uuid.uuid4())[:8]
@@ -88,7 +88,7 @@ class VerdictEnvironment(Environment):
         )
         return self._build_observation()
 
-    async def step(self, action: Dict[str, Any]) -> StepResult:
+    def step(self, action: Dict[str, Any]) -> StepResult:
         if self._done:
             return StepResult(
                 observation=self._build_observation(),
