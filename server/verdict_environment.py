@@ -226,49 +226,50 @@ class VerdictEnvironment(Environment):
         )
         return 0.02, msg
 
-    def _build_observation(self) -> Dict[str, Any]:
+    def _build_observation(self) -> VerdictObservation:
+        from models import VerdictObservation
         cfg = DIFFICULTY_CONFIG[self._difficulty]
         final_reward = calculate_reward(
             self._cases, self._evidence, self._witnesses,
             self._courtroom, self._support, self._advanced,
             self._step, cfg["max_steps"]
         )
-        return {
-            "step": self._step,
-            "max_steps": cfg["max_steps"],
-            "difficulty": self._difficulty,
-            "episode_id": self._episode_id,
-            "cases_summary": {
+        return VerdictObservation(
+            step=self._step,
+            max_steps=cfg["max_steps"],
+            difficulty=self._difficulty,
+            episode_id=self._episode_id,
+            cases_summary={
                 "total": len(self._cases),
                 "active": sum(1 for c in self._cases if not c["closed"]),
                 "closed": sum(1 for c in self._cases if c["closed"]),
             },
-            "evidence_summary": {
+            evidence_summary={
                 "total": len(self._evidence),
                 "analyzed": sum(1 for e in self._evidence if e["analyzed"]),
                 "admissible": sum(1 for e in self._evidence if e.get("admissible")),
             },
-            "witness_summary": {
+            witness_summary={
                 "total": len(self._witnesses),
                 "prepared": sum(1 for w in self._witnesses if w["prepared"]),
                 "threatened": sum(1 for w in self._witnesses
-                                  if w["threatened"] and not w["protected"]),
+                              if w["threatened"] and not w["protected"]),
             },
-            "courtroom": {
-                "judge_mood": self._courtroom["judge_mood"],
-                "jury_sentiment": self._courtroom["jury_sentiment"],
+            courtroom={
+                "judge_mood": self._courtroom.get("judge_mood", 0.5),
+                "jury_sentiment": self._courtroom.get("jury_sentiment", 0.5),
                 "surprise_motions_pending": sum(
                     1 for m in self._courtroom.get("surprise_motions", [])
                     if not m["handled"]
                 ),
             },
-            "firm": {
-                "reputation": self._support["firm_reputation"],
-                "client_trust": self._support["client_trust"],
-                "media_sentiment": self._support["media_sentiment"],
+            firm={
+                "reputation": self._support.get("firm_reputation", 0.7),
+                "client_trust": self._support.get("client_trust", 0.75),
+                "media_sentiment": self._support.get("media_sentiment", 0.5),
             },
-            "current_reward": final_reward,
-            "cumulative_reward": round(self._cumulative_reward, 4),
-            "last_action_result": self._last_result,
-            "done": self._done,
-        }
+            current_reward=final_reward,
+            cumulative_reward=round(self._cumulative_reward, 4),
+            last_action_result=self._last_result,
+            done=self._done,
+        )

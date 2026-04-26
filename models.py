@@ -29,12 +29,16 @@ class VerdictAction(BaseModel):
     note: Optional[str] = None
 
 class VerdictObservation(BaseModel):
-    step: int
-    max_steps: int
-    difficulty: str
-    episode_id: str
-    current_reward: float
-    cumulative_reward: float
-    last_action_result: str
-    done: bool
-    systems: Dict[str, Any] = {}
+    step: int = 0
+    max_steps: int = 60
+    difficulty: str = "medium"
+    episode_id: str = ""
+    current_reward: float = 0.0
+    cumulative_reward: float = 0.0
+    last_action_result: str = ""
+    done: bool = False
+    cases_summary: Dict[str, Any] = {}
+    evidence_summary: Dict[str, Any] = {}
+    witness_summary: Dict[str, Any] = {}
+    courtroom: Dict[str, Any] = {}
+    firm: Dict[str, Any] = {}
