@@ -66,7 +66,8 @@ class VerdictEnvironment(Environment):
         self._support = {}
         self._advanced = {}
 
-    async def reset(self, difficulty: str = "medium") -> Dict[str, Any]:
+    async def reset(self, **kwargs) -> Dict[str, Any]:
+        difficulty = kwargs.get("difficulty", "medium")
         self._difficulty = difficulty if difficulty in DIFFICULTY_CONFIG else "medium"
         self._episode_id = str(uuid.uuid4())[:8]
         self._step = 0
